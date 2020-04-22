@@ -11,13 +11,13 @@ router.route("/add").post((req, res) => {
   const storeAddress = req.body.storeAddress;
   const storeName = req.body.storeName;
   const busyness = req.body.busyness;
-  const time = Date.parse(req.body.time);
+  //const time = Date.parse(req.body.time);
 
   const newBusyness = new Busyness({
     storeAddress,
     storeName,
     busyness,
-    time,
+    //time,
   });
 
   newBusyness
