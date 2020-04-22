@@ -11,13 +11,11 @@ router.route("/add").post((req, res) => {
   const storeAddress = req.body.storeAddress;
   const storeName = req.body.storeName;
   const busyness = req.body.busyness;
-  //const time = Date.parse(req.body.time);
 
   const newBusyness = new Busyness({
     storeAddress,
     storeName,
     busyness,
-    //time,
   });
 
   newBusyness
@@ -42,7 +40,6 @@ router.route("/update/:id").post((req, res) => {
       busyness.storeAddress = req.body.storeAddress;
       busyness.storeName = req.body.storeName;
       busyness.busyness = req.body.busyness;
-      busyness.time = Date.parse(req.body.time);
 
       busyness
         .save()
