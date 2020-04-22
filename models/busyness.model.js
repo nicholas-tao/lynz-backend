@@ -7,7 +7,6 @@ const busynessSchema = new Schema(
     storeAddress: { type: String, required: true },
     storeName: { type: String, required: true },
     busyness: { type: String, required: true },
-    //time: { type: Date, required: true },
   },
   {
     timestamps: true,
