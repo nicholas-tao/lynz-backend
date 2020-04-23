@@ -106,14 +106,16 @@ router.get("/getstores", (request, response) => {
         storeSize[i] = data.results[i].user_ratings_total;
         storeId[i] = data.results[i].id;
       }
-      sortSizes();
+      //sortSizes();
       return axios.get(link2);
     })
     .then((getResponse2) => {
       console.log("GET Response 2");
-      data2 = getResponse2.data2;
+      data2 = getResponse2.data;
+
       response.send(data2);
       console.log(data2); //data2 is undefined
+
       for (
         var i = data.results.length - 1;
         i < data.results.length - 1 + data2.results.length;
@@ -194,6 +196,16 @@ router.route("/add").post((req, res) => {
     .save()
     .then(() => res.json("Busyness added!"))
     .catch((err) => res.status(400).json("Error: " + err));
+});
+
+//for when user wants to view busymess (First they send their coordinates and radius)
+router.route("/view").post((req, res) => {
+  const latitude = req.body.latitude;
+  const longitude = req.body.longitude;
+  const radius = req.body.radius;
+
+  console.log(latitude + "," + longitude);
+  console.log(radius);
 });
 
 router.route("/:id").get((req, res) => {
