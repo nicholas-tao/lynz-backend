@@ -198,14 +198,14 @@ router.route("/add").post((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-//for when user wants to view busymess (First they send their coordinates and radius)
+//for when user wants to view busyness (First they send their coordinates and radius)
 router.route("/view").post((req, res) => {
   const latitude = req.body.latitude;
   const longitude = req.body.longitude;
   const radius = req.body.radius;
 
-  console.log(latitude + "," + longitude);
-  console.log(radius);
+  //console.log(latitude + "," + longitude);
+  //console.log(radius);
 });
 
 router.route("/:id").get((req, res) => {
