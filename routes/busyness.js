@@ -1,18 +1,9 @@
-//AIzaSyDssQoht_O4WR5jLRT0cLUtenY7eL3Answ
-//43.878960,-79.413383
-
 require("dotenv").config();
 
 const router = require("express").Router();
 let Busyness = require("../models/busyness.model");
 
 const axios = require("axios");
-
-var names = [];
-var address = [];
-var rating = [];
-var storeSize = [];
-var storeId = [];
 
 const API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
@@ -31,17 +22,60 @@ var link1 =
   "&type=grocery_or_supermarket&fields=name,formatted_address,user_ratings_total,place_id&key=" +
   API_KEY;
 
+var link2 =
+  "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+  longitude +
+  "," +
+  latitude +
+  "&radius=" +
+  radius +
+  "&type=department_store&fields=name,formatted_address,user_ratings_total,place_id&key=" +
+  API_KEY;
+
+var names = [];
+var address = [];
+var rating = [];
+var storeSize = [];
+var storeId = [];
+var data = [];
+var data2 = [];
+
+/*
 router.get("/getstores", (request, response) => {
-  var data = [];
   axios
     .get(link1)
     .then((getResponse) => {
       console.log("GET Response");
       data = getResponse.data;
       response.send(data);
-      console.log(data.results[0].name);
 
       for (var i = 0; i < data.results.length; i++) {
+        names[i] = data.results[i].name;
+        address[i] = data.results[i].vicinity;
+        rating[i] = data.results[i].rating;
+        storeSize[i] = data.results[i].user_ratings_total;
+        storeId[i] = data.results[i].id;
+      }
+      sortSizes();
+    })
+    .catch(function (error) {
+      console.log("Error occured");
+    });
+});
+
+router.get("/getstores", (request, response) => {
+  axios
+    .get(link2)
+    .then((getResponse) => {
+      console.log("GET Response");
+      data2 = getResponse.data;
+      response.send(data2);
+
+      for (
+        var i = data.results.length - 1;
+        i < data.results.length - 1 + data2.results.length;
+        i++
+      ) {
         names[i] = data.results[i].name;
         address[i] = data.results[i].vicinity;
         rating[i] = data.results[i].rating;
@@ -52,6 +86,49 @@ router.get("/getstores", (request, response) => {
       display();
     })
     .catch(function (error) {
+      console.log("Error occured");
+    });
+});
+*/
+
+router.get("/getstores", (request, response) => {
+  axios
+    .get(link1)
+    .then((getResponse) => {
+      console.log("GET Response");
+      data = getResponse.data;
+      response.send(data);
+
+      for (var i = 0; i < data.results.length; i++) {
+        names[i] = data.results[i].name;
+        address[i] = data.results[i].vicinity;
+        rating[i] = data.results[i].rating;
+        storeSize[i] = data.results[i].user_ratings_total;
+        storeId[i] = data.results[i].id;
+      }
+      sortSizes();
+      return axios.get(link2);
+    })
+    .then((getResponse2) => {
+      console.log("GET Response 2");
+      data2 = getResponse2.data2;
+      response.send(data2);
+      console.log(data2); //data2 is undefined
+      for (
+        var i = data.results.length - 1;
+        i < data.results.length - 1 + data2.results.length;
+        i++
+      ) {
+        names[i] = data.results[i].name;
+        address[i] = data.results[i].vicinity;
+        rating[i] = data.results[i].rating;
+        storeSize[i] = data.results[i].user_ratings_total;
+        storeId[i] = data.results[i].id;
+      }
+      sortSizes();
+      display();
+    })
+    .catch((err) => {
       console.log("Error occured");
     });
 });
