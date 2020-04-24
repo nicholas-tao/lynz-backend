@@ -10,6 +10,9 @@ const API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 //this stuff to get from frontend
 var longitude = 43.87896;
 var latitude = -79.413383;
+
+//longitude = 37.365892;
+//latitude = -122.058422;
 var radius = 5000; //in metres
 
 var link1 =
@@ -40,57 +43,6 @@ var storeId = [];
 var data = [];
 var data2 = [];
 
-/*
-router.get("/getstores", (request, response) => {
-  axios
-    .get(link1)
-    .then((getResponse) => {
-      console.log("GET Response");
-      data = getResponse.data;
-      response.send(data);
-
-      for (var i = 0; i < data.results.length; i++) {
-        names[i] = data.results[i].name;
-        address[i] = data.results[i].vicinity;
-        rating[i] = data.results[i].rating;
-        storeSize[i] = data.results[i].user_ratings_total;
-        storeId[i] = data.results[i].id;
-      }
-      sortSizes();
-    })
-    .catch(function (error) {
-      console.log("Error occured");
-    });
-});
-
-router.get("/getstores", (request, response) => {
-  axios
-    .get(link2)
-    .then((getResponse) => {
-      console.log("GET Response");
-      data2 = getResponse.data;
-      response.send(data2);
-
-      for (
-        var i = data.results.length - 1;
-        i < data.results.length - 1 + data2.results.length;
-        i++
-      ) {
-        names[i] = data.results[i].name;
-        address[i] = data.results[i].vicinity;
-        rating[i] = data.results[i].rating;
-        storeSize[i] = data.results[i].user_ratings_total;
-        storeId[i] = data.results[i].id;
-      }
-      sortSizes();
-      display();
-    })
-    .catch(function (error) {
-      console.log("Error occured");
-    });
-});
-*/
-
 router.get("/getstores", (request, response) => {
   axios
     .get(link1)
@@ -112,7 +64,7 @@ router.get("/getstores", (request, response) => {
       console.log("GET Response 2");
       data2 = getResponse2.data;
 
-      //response.send(data2);
+      response.send(data2);
       var j = 0;
 
       for (
@@ -120,14 +72,19 @@ router.get("/getstores", (request, response) => {
         i < data.results.length - 1 + data2.results.length;
         i++
       ) {
-        names[i] = data2.results[j].name;
-        console.log(data2.results[j].name);
-        address[i] = data2.results[j].vicinity;
-        rating[i] = data2.results[j].rating;
-        storeSize[i] = data2.results[j].user_ratings_total;
-        storeId[i] = data2.results[j].place_id;
-        j++;
+        if (
+          data2.results[j].name.includes("Costco") ||
+          data2.results[j].name.includes("Walmart")
+        ) {
+          names[i] = data2.results[j].name;
+          address[i] = data2.results[j].vicinity;
+          rating[i] = data2.results[j].rating;
+          storeSize[i] = data2.results[j].user_ratings_total;
+          storeId[i] = data2.results[j].place_id;
+          j++;
+        }
       }
+      //filterOutStores();
       sortSizes();
       display();
     })
@@ -135,6 +92,25 @@ router.get("/getstores", (request, response) => {
       console.log("Error:" + err.message);
     });
 });
+
+function filterOutStores() {
+  var j = 0;
+  for (
+    var i = data.results.length - 1;
+    i < data.results.length - 1 + data2.results.length;
+    i++
+  ) {
+    if (!names[j].includes("Costco") || !names[j].includes("Walmart")) {
+      console.log(names[j]);
+      names.splice(j, 1);
+      address.splice(j, 1);
+      rating.splice(j, 1);
+      storeSize.splice(j, 1);
+      storeId.splice(j, 1);
+    }
+    j++;
+  }
+}
 
 function display() {
   for (var i = 0; i < names.length; i++) {
