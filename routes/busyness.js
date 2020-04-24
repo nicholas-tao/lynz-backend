@@ -64,7 +64,6 @@ router.get("/getstores", (request, response) => {
       console.log("GET Response 2");
       data2 = getResponse2.data;
 
-      response.send(data2);
       var j = 0;
 
       for (
@@ -85,7 +84,8 @@ router.get("/getstores", (request, response) => {
         }
       }
       sortSizes();
-      display();
+      populateBusynessData();
+      response.send(busynessDataToSend);
     })
     .catch((err) => {
       console.log("Error:" + err.message);
@@ -127,6 +127,19 @@ function sortSizes() {
     }
     n--;
   } while (swapp);
+}
+
+var busynessDataToSend = [];
+
+function populateBusynessData() {
+  for (var i = 0; i < names.length; i++) {
+    busynessDataToSend.push({
+      name: names[i],
+      address: address[i],
+      //busyness: busyness [i]
+    });
+  }
+  //console.log(busynessDataToSend);
 }
 
 router.route("/").get((req, res) => {
