@@ -84,7 +84,6 @@ router.get("/getstores", (request, response) => {
           j++;
         }
       }
-      //filterOutStores();
       sortSizes();
       display();
     })
@@ -92,25 +91,6 @@ router.get("/getstores", (request, response) => {
       console.log("Error:" + err.message);
     });
 });
-
-function filterOutStores() {
-  var j = 0;
-  for (
-    var i = data.results.length - 1;
-    i < data.results.length - 1 + data2.results.length;
-    i++
-  ) {
-    if (!names[j].includes("Costco") || !names[j].includes("Walmart")) {
-      console.log(names[j]);
-      names.splice(j, 1);
-      address.splice(j, 1);
-      rating.splice(j, 1);
-      storeSize.splice(j, 1);
-      storeId.splice(j, 1);
-    }
-    j++;
-  }
-}
 
 function display() {
   for (var i = 0; i < names.length; i++) {
