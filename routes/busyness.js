@@ -2,8 +2,6 @@ require("dotenv").config();
 
 const router = require("express").Router();
 let Busyness = require("../models/busyness.model");
-const express = require("express");
-const app = express();
 const axios = require("axios");
 const API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
@@ -44,7 +42,7 @@ var storeId = [];
 var data = [];
 var data2 = [];
 
-router.get("/getstores", (request, response, next) => {
+router.get("/getstores", (request, response) => {
   axios
     .get(link1)
     .then((getResponse) => {
@@ -84,11 +82,9 @@ router.get("/getstores", (request, response, next) => {
         }
       }
       sortSizes();
-      //next(); //express middleware use
-      Busyness.find({}, function (err, store) {
-        if (err) return handleError(err);
-        console.log("this: " + store);
-      });
+      readFromDB();
+      populateDataToSend();
+      response.send(busynessDataToSend);
     })
     .catch((err) => {
       console.log("Error:" + err.message);
@@ -99,30 +95,23 @@ var busynessInDB = [];
 var timesPreprocessed = [];
 var scores = [];
 var times = [];
-/*
-router.route("/getstores").get((req, response) => {
-  for (var i = 0; i < names.length; i++) {
-    const query = Busyness.find({ storeAddress: address[i] })
-    console.log(query[0])
-      .then((data) => {
-        console.log(response);
-        var dataReturned = response.json(); //THE BUG IS RIGHT HERE (how do i store the response form mongo???) --> look at this: https://docs.mongodb.com/guides/server/read_queries/
-        //console.log(dataReturned);
-        for (var j = 0; j < dataReturned.length; j++) {
-          busynessInDB[j] = dataReturned[j].busyness;
-          timesPreprocessed = dataReturned[j].createdAt;
-        }
+var dataReturned = [];
 
-        busynessLevel[i] = determineBusyness();
-      })
-      .catch((err) => {
-        console.log("Error:" + err.message);
-      });
+function readFromDB() {
+  for (var i = 0; i < names.length; i++) {
+    Busyness.find({ storeAddress: address[i] }, function (err, storeInfo) {
+      if (err) return handleError(err);
+      dataReturned = storeInfo;
+    });
+
+    for (var j = 0; j < dataReturned.length; j++) {
+      busynessInDB[j] = dataReturned[j].busyness;
+      timesPreprocessed = dataReturned[j].createdAt;
+    }
+    busynessLevel[i] = determineBusyness();
   }
-  populateDataToSend();
-  response.send(busynessDataToSend);
-});
-*/
+}
+
 // sort stores by size
 function sortSizes() {
   var swapp;
