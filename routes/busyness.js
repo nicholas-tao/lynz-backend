@@ -45,7 +45,7 @@ var busynessInDB = [];
 var timesPreprocessed = [];
 var scores = [];
 var times = [];
-var dataReturned = [];
+//var dataReturned = [];
 
 router.get("/getstores", (request, response) => {
   axios
@@ -89,6 +89,7 @@ router.get("/getstores", (request, response) => {
       sortSizes();
       for (var i = 0; i < names.length; i++) {
         readFromDB(i);
+        break;
       }
       populateDataToSend();
       response.send(busynessDataToSend);
@@ -99,25 +100,30 @@ router.get("/getstores", (request, response) => {
 });
 
 function readFromDB(i) {
+  var dataReturned;
   Busyness.find({ storeAddress: address[i] }, function (err, storeInfo) {
     if (err) return handleError(err);
     dataReturned = storeInfo;
     //console.log(dataReturned); //if i console.log(dataReturned) here, i get the data
     //if i put the for loop (j < dataReturned.length) here, i still get all stores as Not Busy
     for (var j = 0; j < dataReturned.length; j++) {
-      busynessInDB[j] = dataReturned[j].busyness;
+      busynessInDB[j] = String(dataReturned[j].busyness);
       timesPreprocessed[j] = dataReturned[j].createdAt;
     }
+    busynessLevel[i] = determineBusyness();
   });
+
   //MATTHEW READ THIS: busynesInDB.length = 0 here but its not in the for loop right above
 
   //console.log(dataReturned); //if i console.log(dataReturned) here, i get empty array
-  busynessLevel[i] = determineBusyness();
+
   //console.log(busynessLevel[i]);
+  /*
   busynessInDB = [];
   timesPreprocessed = [];
   scores = [];
   times = [];
+  */
 }
 
 // sort stores by size
@@ -165,8 +171,10 @@ function determineBusyness() {
     var z = 1 / Math.pow(times[i] + 1, 2);
     x += scores[i] * z;
     y += z;
+    console.log(scores[i] + " " + times[i]);
   }
   var weightedScore = Math.round(x / y);
+  console.log(weightedScore);
   var final = chooseClosest(weightedScore); // choosing final busyness score
 
   str = outcome(final); // final busyness as a string
@@ -175,17 +183,17 @@ function determineBusyness() {
 
 function convert() {
   for (var i = 0; i < busynessInDB.length; i++) {
-    if (busynessInDB[i] == "Not Busy") {
+    if (busynessInDB[i] === "Not Busy") {
       scores[i] = 100;
-    } else if (busynessInDB[i] == "Somewhat Busy") {
+    } else if (busynessInDB[i] === "Somewhat Busy") {
       scores[i] = 150;
-    } else if (busynessInDB[i] == "Moderately Busy") {
+    } else if (busynessInDB[i] === "Moderately Busy") {
       scores[i] = 200;
-    } else if (busynessInDB[i] == "Busy") {
+    } else if (busynessInDB[i] === "Busy") {
       scores[i] = 250;
-    } else if (busynessInDB[i] == "Very Busy") {
+    } else if (busynessInDB[i] === "Very Busy") {
       scores[i] = 300;
-    } else if (busynessInDB[i] == "Extremely Busy") {
+    } else if (busynessInDB[i] === "Extremely Busy") {
       scores[i] = 350;
     }
   }
