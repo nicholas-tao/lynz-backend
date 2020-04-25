@@ -103,13 +103,13 @@ function readFromDB() {
       if (err) return handleError(err);
       dataReturned = storeInfo;
       //console.log(dataReturned); //if i console.log(dataReturned) here, i get the data
+      for (var j = 0; j < dataReturned.length; j++) {
+        busynessInDB[j] = dataReturned[j].busyness;
+        timesPreprocessed = dataReturned[j].createdAt;
+      }
     });
-    console.log(dataReturned); //if i console.log(dataReturned) here, i get empty array
+    //console.log(dataReturned); //if i console.log(dataReturned) here, i get empty array
 
-    for (var j = 0; j < dataReturned.length; j++) {
-      busynessInDB[j] = dataReturned[j].busyness;
-      timesPreprocessed = dataReturned[j].createdAt;
-    }
     busynessLevel[i] = determineBusyness();
   }
 }
