@@ -109,11 +109,15 @@ function readFromDB() {
         timesPreprocessed[j] = dataReturned[j].createdAt;
       }
     });
+    //MATTHEW READ THIS: busynesInDB.length = 0 here but its not in the for loop right above
 
     //console.log(dataReturned); //if i console.log(dataReturned) here, i get empty array
-
     busynessLevel[i] = determineBusyness();
     //console.log(busynessLevel[i]);
+    busynessInDB = [];
+    timesPreprocessed = [];
+    scores = [];
+    times = [];
   }
 }
 
@@ -171,6 +175,7 @@ function determineBusyness() {
 }
 
 function convert() {
+  console.log(busynessInDB.length);
   for (var i = 0; i < busynessInDB.length; i++) {
     if (busynessInDB[i] == "Not Busy") {
       scores[i] = 100;
@@ -181,7 +186,6 @@ function convert() {
     } else if (busynessInDB[i] == "Busy") {
       scores[i] = 250;
     } else if (busynessInDB[i] == "Very Busy") {
-      //console.log("we got a v busy");
       scores[i] = 300;
     } else if (busynessInDB[i] == "Extremely Busy") {
       scores[i] = 350;
@@ -249,10 +253,8 @@ function convertTime() {
   }
 }
 function elapsedTime(startTimeProcessedParam) {
-  var startTimeProcessed = JSON.stringify(startTimeProcessedParam);
-  console.log("made it");
+  var startTimeProcessed = String(startTimeProcessedParam);
   var endTimeProcessed = getDateTime();
-  console.log("The type is: " + typeof startTimeProcessed);
   var year1 = parseInt(startTimeProcessed.substring(0, 4));
   var month1 = parseInt(startTimeProcessed.substring(5, 7));
   var day1 = parseInt(startTimeProcessed.substring(8, 10));
