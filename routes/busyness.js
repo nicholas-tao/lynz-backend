@@ -109,9 +109,11 @@ function readFromDB() {
         timesPreprocessed[j] = dataReturned[j].createdAt;
       }
     });
+
     //console.log(dataReturned); //if i console.log(dataReturned) here, i get empty array
 
     busynessLevel[i] = determineBusyness();
+    //console.log(busynessLevel[i]);
   }
 }
 
@@ -179,6 +181,7 @@ function convert() {
     } else if (busynessInDB[i] == "Busy") {
       scores[i] = 250;
     } else if (busynessInDB[i] == "Very Busy") {
+      //console.log("we got a v busy");
       scores[i] = 300;
     } else if (busynessInDB[i] == "Extremely Busy") {
       scores[i] = 350;
@@ -245,8 +248,11 @@ function convertTime() {
     times[i] = elapsedTime(timesPreprocessed[i]);
   }
 }
-function elapsedTime(startTimeProcessed) {
+function elapsedTime(startTimeProcessedParam) {
+  var startTimeProcessed = JSON.stringify(startTimeProcessedParam);
+  console.log("made it");
   var endTimeProcessed = getDateTime();
+  console.log("The type is: " + typeof startTimeProcessed);
   var year1 = parseInt(startTimeProcessed.substring(0, 4));
   var month1 = parseInt(startTimeProcessed.substring(5, 7));
   var day1 = parseInt(startTimeProcessed.substring(8, 10));
