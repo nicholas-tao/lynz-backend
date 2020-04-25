@@ -104,12 +104,13 @@ function readFromDB() {
       dataReturned = storeInfo;
       //console.log(dataReturned); //if i console.log(dataReturned) here, i get the data
       //if i put the for loop (j < dataReturned.length) here, i still get all stores as Not Busy
+      for (var j = 0; j < dataReturned.length; j++) {
+        busynessInDB[j] = dataReturned[j].busyness;
+        timesPreprocessed[j] = dataReturned[j].createdAt;
+      }
     });
     //console.log(dataReturned); //if i console.log(dataReturned) here, i get empty array
-    for (var j = 0; j < dataReturned.length; j++) {
-      busynessInDB[j] = dataReturned[j].busyness;
-      timesPreprocessed = dataReturned[j].createdAt;
-    }
+
     busynessLevel[i] = determineBusyness();
   }
 }
