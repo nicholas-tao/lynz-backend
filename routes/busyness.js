@@ -156,7 +156,7 @@ function feedMe() {
   var y = 0;
   for (var i = 0; i < scores.length; i++) {
     if (times.length == 0) {
-      return "insufficent data";
+      return "Insufficient Data";
     }
     // getting weighted average
     var z = 1 / Math.pow(times[i] + 1, 2);
@@ -202,19 +202,19 @@ function chooseClosest(finalScore) {
 
 function outcome(m) {
   if (m == 100) {
-    return "not busy";
+    return "Not Busy";
   } else if (m == 150) {
-    return "somewhat busy";
+    return "Somewhat Busy";
   } else if (m == 200) {
-    return "moderately busy";
+    return "Moderately Busy";
   } else if (m == 250) {
-    return "busy";
+    return "Busy";
   } else if (m == 300) {
-    return "very busy";
+    return "Very Busy";
   } else if (m == 250) {
-    return "extremely busy";
+    return "Extremely Busy";
   } else {
-    return "error";
+    return "Insufficient Data";
   }
 }
 
