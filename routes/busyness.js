@@ -2,9 +2,9 @@ require("dotenv").config();
 
 const router = require("express").Router();
 let Busyness = require("../models/busyness.model");
-
+const express = require("express");
+const app = express();
 const axios = require("axios");
-
 const API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
 //this stuff to get from frontend
@@ -37,13 +37,14 @@ var link2 =
 
 var names = [];
 var address = [];
+var busynessLevel = [];
 var rating = [];
 var storeSize = [];
 var storeId = [];
 var data = [];
 var data2 = [];
 
-router.get("/getstores", (request, response) => {
+router.get("/getstores", (request, response, next) => {
   axios
     .get(link1)
     .then((getResponse) => {
@@ -84,12 +85,36 @@ router.get("/getstores", (request, response) => {
         }
       }
       sortSizes();
-      populateDataToSend();
-      response.send(busynessDataToSend);
+      next();
     })
     .catch((err) => {
       console.log("Error:" + err.message);
     });
+});
+
+var busynessInDB = [];
+var timesPreprocessed = [];
+var scores = [];
+var times = [];
+
+router.route("/getstores").get((req, response) => {
+  for (var i = 0; i < names.length; i++) {
+    Busyness.find({ storeAddress: address[i] })
+      .then((data) => {
+        var dataReturned = response.json();
+        for (var j = 0; j < dataReturned.length; j++) {
+          busynessInDB[j] = dataReturned[j].busyness;
+          timesPreprocessed = dataReturned[j].createdAt;
+        }
+
+        busynessLevel[i] = feedMe();
+      })
+      .catch((err) => {
+        console.log("Error:" + err.message);
+      });
+  }
+  populateDataToSend();
+  response.send(busynessDataToSend);
 });
 
 // sort stores by size
@@ -123,27 +148,6 @@ function sortSizes() {
   } while (swapp);
 }
 
-//given a string (address), find all entries in db with that address
-var busyness = [];
-
-function populateBusynessArray() {
-  for (var i = 0; i < names.length; i++) {
-    busyness[i] = "something";
-  }
-}
-
-// input the busyness list & time list => output overall busyness
-var busyness = ["not busy", "somewhat busy", "busy"];
-var timesPreprocessed = [
-  "2020-04-24T09:10:15.409Z",
-  "2020-04-24T09:07:15.409Z",
-  "2020-04-24T12:16:05.409Z",
-]; //
-var scores = [];
-var times = [];
-var displayThisBusynessLevel = feedMe();
-console.log(displayThisBusynessLevel);
-
 function feedMe() {
   convert(); // convert busyness into scores
   convertTime();
@@ -163,18 +167,18 @@ function feedMe() {
 }
 
 function convert() {
-  for (var i = 0; i < busyness.length; i++) {
-    if (busyness[i] == "not busy") {
+  for (var i = 0; i < busynessInDB.length; i++) {
+    if (busynessInDB[i] == "not busy") {
       scores[i] = 100;
-    } else if (busyness[i] == "somewhat busy") {
+    } else if (busynessInDB[i] == "somewhat busy") {
       scores[i] = 150;
-    } else if (busyness[i] == "moderately busy") {
+    } else if (busynessInDB[i] == "moderately busy") {
       scores[i] = 200;
-    } else if (busyness[i] == "busy") {
+    } else if (busynessInDB[i] == "busy") {
       scores[i] = 250;
-    } else if (busyness[i] == "very busy") {
+    } else if (busynessInDB[i] == "very busy") {
       scores[i] = 300;
-    } else if (busyness[i] == "extremely busy") {
+    } else if (busynessInDB[i] == "extremely busy") {
       scores[i] = 350;
     }
   }
@@ -275,10 +279,10 @@ function populateDataToSend() {
     busynessDataToSend.push({
       name: names[i],
       address: address[i],
-      //busyness: busyness [i]
+      busyness: busynessLevel[i],
     });
   }
-  //console.log(busynessDataToSend);
+  console.log(busynessDataToSend);
 }
 /*
 router.route("/").get((req, res) => {
