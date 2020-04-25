@@ -100,7 +100,7 @@ router.route("/getstores").get((req, response) => {
   for (var i = 0; i < names.length; i++) {
     Busyness.find({ storeAddress: address[i] })
       .then((data) => {
-        var dataReturned = response.json(); //THE BUG IS RIGHT HERE (how do i store the response form mongo???)
+        var dataReturned = response.json(); //THE BUG IS RIGHT HERE (how do i store the response form mongo???) --> look at this: https://docs.mongodb.com/guides/server/read_queries/
         console.log(dataReturned);
         for (var j = 0; j < dataReturned.length; j++) {
           busynessInDB[j] = dataReturned[j].busyness;
@@ -148,12 +148,16 @@ function sortSizes() {
   } while (swapp);
 }
 
+//if no data about store, returns "not busy"
 function feedMe() {
   convert(); // convert busyness into scores
   convertTime();
   var x = 0;
   var y = 0;
   for (var i = 0; i < scores.length; i++) {
+    if (times.length == 0) {
+      return "insufficent data";
+    }
     // getting weighted average
     var z = 1 / Math.pow(times[i] + 1, 2);
     x += scores[i] * z;
