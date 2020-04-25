@@ -102,7 +102,9 @@ function readFromDB() {
     Busyness.find({ storeAddress: address[i] }, function (err, storeInfo) {
       if (err) return handleError(err);
       dataReturned = storeInfo;
+      //console.log(dataReturned); //if i console.log(dataReturned) here, i get the data
     });
+    console.log(dataReturned); //if i console.log(dataReturned) here, i get empty array
 
     for (var j = 0; j < dataReturned.length; j++) {
       busynessInDB[j] = dataReturned[j].busyness;
