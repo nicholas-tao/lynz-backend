@@ -89,7 +89,6 @@ router.get("/getstores", (request, response) => {
       sortSizes();
       for (var i = 0; i < names.length; i++) {
         readFromDB(i);
-        break;
       }
       populateDataToSend();
       response.send(busynessDataToSend);
@@ -115,6 +114,12 @@ function readFromDB(i) {
       timesPreprocessed[j] = temp4;
     }
     busynessLevel[i] = determineBusyness();
+    console.log(busynessLevel[i]);
+    busynessInDB = [];
+    timesPreprocessed = [];
+    scores = [];
+    times = [];
+
     //busynessLevel is stored here, but the array is empty outside of this Busyness.find block
   });
 
@@ -123,12 +128,6 @@ function readFromDB(i) {
   //console.log(dataReturned); //if i console.log(dataReturned) here, i get empty array
 
   //console.log(busynessLevel[i]);
-  /*
-  busynessInDB = [];
-  timesPreprocessed = [];
-  scores = [];
-  times = [];
-  */
 }
 
 // sort stores by size
@@ -169,9 +168,6 @@ function determineBusyness() {
   var x = 0;
   var y = 0;
   for (var i = 0; i < scores.length; i++) {
-    if (times.length == 0) {
-      return "Insufficient Data";
-    }
     // getting weighted average
     var z = 1 / Math.pow(times[i] + 1, 2);
     x += scores[i] * z;
@@ -181,6 +177,9 @@ function determineBusyness() {
   var final = chooseClosest(weightedScore); // choosing final busyness score
 
   str = outcome(final); // final busyness as a string
+  if (times.length == 0) {
+    return "Insufficient Data";
+  }
   return str;
 }
 
@@ -227,8 +226,6 @@ function outcome(m) {
     return "Very Busy";
   } else if (m == 250) {
     return "Extremely Busy";
-  } else {
-    return "Insufficient Data";
   }
 }
 
