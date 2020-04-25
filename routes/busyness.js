@@ -255,6 +255,7 @@ function getDateTime() {
 
 function convertTime() {
   for (var i = 0; i < timesPreprocessed.length; i++) {
+    console.log("time pre: " + timesPreprocessed[i]);
     times[i] = elapsedTime(timesPreprocessed[i]);
   }
 }
