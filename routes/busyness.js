@@ -167,17 +167,17 @@ function determineBusyness() {
 
 function convert() {
   for (var i = 0; i < busynessInDB.length; i++) {
-    if (busynessInDB[i] == "not busy") {
+    if (busynessInDB[i] == "Not Busy") {
       scores[i] = 100;
-    } else if (busynessInDB[i] == "somewhat busy") {
+    } else if (busynessInDB[i] == "Somewhat Busy") {
       scores[i] = 150;
-    } else if (busynessInDB[i] == "moderately busy") {
+    } else if (busynessInDB[i] == "Moderately Busy") {
       scores[i] = 200;
-    } else if (busynessInDB[i] == "busy") {
+    } else if (busynessInDB[i] == "Busy") {
       scores[i] = 250;
-    } else if (busynessInDB[i] == "very busy") {
+    } else if (busynessInDB[i] == "Very Busy") {
       scores[i] = 300;
-    } else if (busynessInDB[i] == "extremely busy") {
+    } else if (busynessInDB[i] == "Extremely Busy") {
       scores[i] = 350;
     }
   }
