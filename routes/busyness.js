@@ -84,7 +84,11 @@ router.get("/getstores", (request, response, next) => {
         }
       }
       sortSizes();
-      next(); //express middleware use
+      //next(); //express middleware use
+      Busyness.find({}, function (err, store) {
+        if (err) return handleError(err);
+        console.log("this: " + store);
+      });
     })
     .catch((err) => {
       console.log("Error:" + err.message);
@@ -95,19 +99,21 @@ var busynessInDB = [];
 var timesPreprocessed = [];
 var scores = [];
 var times = [];
-
+/*
 router.route("/getstores").get((req, response) => {
   for (var i = 0; i < names.length; i++) {
-    Busyness.find({ storeAddress: address[i] })
+    const query = Busyness.find({ storeAddress: address[i] })
+    console.log(query[0])
       .then((data) => {
+        console.log(response);
         var dataReturned = response.json(); //THE BUG IS RIGHT HERE (how do i store the response form mongo???) --> look at this: https://docs.mongodb.com/guides/server/read_queries/
-        console.log(dataReturned);
+        //console.log(dataReturned);
         for (var j = 0; j < dataReturned.length; j++) {
           busynessInDB[j] = dataReturned[j].busyness;
           timesPreprocessed = dataReturned[j].createdAt;
         }
 
-        busynessLevel[i] = feedMe();
+        busynessLevel[i] = determineBusyness();
       })
       .catch((err) => {
         console.log("Error:" + err.message);
@@ -116,7 +122,7 @@ router.route("/getstores").get((req, response) => {
   populateDataToSend();
   response.send(busynessDataToSend);
 });
-
+*/
 // sort stores by size
 function sortSizes() {
   var swapp;
@@ -149,7 +155,7 @@ function sortSizes() {
 }
 
 //if no data about store, returns "not busy"
-function feedMe() {
+function determineBusyness() {
   convert(); // convert busyness into scores
   convertTime();
   var x = 0;
@@ -286,7 +292,6 @@ function populateDataToSend() {
       busyness: busynessLevel[i],
     });
   }
-  console.log(busynessLevel[0]);
 }
 
 router.route("/add").post((req, res) => {
