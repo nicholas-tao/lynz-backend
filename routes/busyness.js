@@ -41,6 +41,11 @@ var storeSize = [];
 var storeId = [];
 var data = [];
 var data2 = [];
+var busynessInDB = [];
+var timesPreprocessed = [];
+var scores = [];
+var times = [];
+var dataReturned = [];
 
 router.get("/getstores", (request, response) => {
   axios
@@ -82,7 +87,9 @@ router.get("/getstores", (request, response) => {
         }
       }
       sortSizes();
-      readFromDB();
+      for (var i = 0; i < names.length; i++) {
+        readFromDB(i);
+      }
       populateDataToSend();
       response.send(busynessDataToSend);
     })
@@ -91,34 +98,26 @@ router.get("/getstores", (request, response) => {
     });
 });
 
-var busynessInDB = [];
-var timesPreprocessed = [];
-var scores = [];
-var times = [];
-var dataReturned = [];
+function readFromDB(i) {
+  Busyness.find({ storeAddress: address[i] }, function (err, storeInfo) {
+    if (err) return handleError(err);
+    dataReturned = storeInfo;
+    //console.log(dataReturned); //if i console.log(dataReturned) here, i get the data
+    //if i put the for loop (j < dataReturned.length) here, i still get all stores as Not Busy
+    for (var j = 0; j < dataReturned.length; j++) {
+      busynessInDB[j] = dataReturned[j].busyness;
+      timesPreprocessed[j] = dataReturned[j].createdAt;
+    }
+  });
+  //MATTHEW READ THIS: busynesInDB.length = 0 here but its not in the for loop right above
 
-function readFromDB() {
-  for (var i = 0; i < names.length; i++) {
-    Busyness.find({ storeAddress: address[i] }, function (err, storeInfo) {
-      if (err) return handleError(err);
-      dataReturned = storeInfo;
-      //console.log(dataReturned); //if i console.log(dataReturned) here, i get the data
-      //if i put the for loop (j < dataReturned.length) here, i still get all stores as Not Busy
-      for (var j = 0; j < dataReturned.length; j++) {
-        busynessInDB[j] = dataReturned[j].busyness;
-        timesPreprocessed[j] = dataReturned[j].createdAt;
-      }
-    });
-    //MATTHEW READ THIS: busynesInDB.length = 0 here but its not in the for loop right above
-
-    //console.log(dataReturned); //if i console.log(dataReturned) here, i get empty array
-    busynessLevel[i] = determineBusyness();
-    //console.log(busynessLevel[i]);
-    busynessInDB = [];
-    timesPreprocessed = [];
-    scores = [];
-    times = [];
-  }
+  //console.log(dataReturned); //if i console.log(dataReturned) here, i get empty array
+  busynessLevel[i] = determineBusyness();
+  //console.log(busynessLevel[i]);
+  busynessInDB = [];
+  timesPreprocessed = [];
+  scores = [];
+  times = [];
 }
 
 // sort stores by size
@@ -175,7 +174,6 @@ function determineBusyness() {
 }
 
 function convert() {
-  console.log(busynessInDB.length);
   for (var i = 0; i < busynessInDB.length; i++) {
     if (busynessInDB[i] == "Not Busy") {
       scores[i] = 100;
