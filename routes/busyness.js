@@ -84,19 +84,13 @@ router.get("/getstores", (request, response) => {
         }
       }
       sortSizes();
-      populateBusynessData();
+      populateDataToSend();
       response.send(busynessDataToSend);
     })
     .catch((err) => {
       console.log("Error:" + err.message);
     });
 });
-
-function display() {
-  for (var i = 0; i < names.length; i++) {
-    console.log(names[i] + " " + address[i]);
-  }
-}
 
 // sort stores by size
 function sortSizes() {
@@ -129,9 +123,154 @@ function sortSizes() {
   } while (swapp);
 }
 
+//given a string (address), find all entries in db with that address
+var busyness = [];
+
+function populateBusynessArray() {
+  for (var i = 0; i < names.length; i++) {
+    busyness[i] = "something";
+  }
+}
+
+// input the busyness list & time list => output overall busyness
+var busyness = ["not busy", "somewhat busy", "busy"];
+var timesPreprocessed = [
+  "2020-04-24T09:10:15.409Z",
+  "2020-04-24T09:07:15.409Z",
+  "2020-04-24T12:16:05.409Z",
+]; //
+var scores = [];
+var times = [];
+var displayThisBusynessLevel = feedMe();
+console.log(displayThisBusynessLevel);
+
+function feedMe() {
+  convert(); // convert busyness into scores
+  convertTime();
+  var x = 0;
+  var y = 0;
+  for (var i = 0; i < scores.length; i++) {
+    // getting weighted average
+    var z = 1 / Math.pow(times[i] + 1, 2);
+    x += scores[i] * z;
+    y += z;
+  }
+  var weightedScore = Math.round(x / y);
+  var final = chooseClosest(weightedScore); // choosing final busyness score
+
+  str = outcome(final); // final busyness as a string
+  return str;
+}
+
+function convert() {
+  for (var i = 0; i < busyness.length; i++) {
+    if (busyness[i] == "not busy") {
+      scores[i] = 100;
+    } else if (busyness[i] == "somewhat busy") {
+      scores[i] = 150;
+    } else if (busyness[i] == "moderately busy") {
+      scores[i] = 200;
+    } else if (busyness[i] == "busy") {
+      scores[i] = 250;
+    } else if (busyness[i] == "very busy") {
+      scores[i] = 300;
+    } else if (busyness[i] == "extremely busy") {
+      scores[i] = 350;
+    }
+  }
+}
+
+function chooseClosest(finalScore) {
+  // rounds raw score to the closest busyness score
+  var busynessScore = [100, 150, 200, 250, 300, 350];
+
+  var closest = busynessScore.reduce(function (prev, curr) {
+    return Math.abs(curr - finalScore) < Math.abs(prev - finalScore)
+      ? curr
+      : prev;
+  });
+  return closest;
+}
+
+function outcome(m) {
+  if (m == 100) {
+    return "not busy";
+  } else if (m == 150) {
+    return "somewhat busy";
+  } else if (m == 200) {
+    return "moderately busy";
+  } else if (m == 250) {
+    return "busy";
+  } else if (m == 300) {
+    return "very busy";
+  } else if (m == 250) {
+    return "extremely busy";
+  } else {
+    return "error";
+  }
+}
+
+function getDateTime() {
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = now.getMonth() + 1;
+  var day = now.getDate();
+  var hour = now.getHours();
+  var minute = now.getMinutes();
+  if (month.toString().length == 1) {
+    month = "0" + month;
+  }
+  if (day.toString().length == 1) {
+    day = "0" + day;
+  }
+  if (hour.toString().length == 1) {
+    hour = "0" + hour;
+  }
+  if (minute.toString().length == 1) {
+    minute = "0" + minute;
+  }
+
+  var dateTime = year + "/" + month + "/" + day + "/" + hour + ":" + minute;
+  return dateTime;
+}
+
+function convertTime() {
+  for (var i = 0; i < timesPreprocessed.length; i++) {
+    times[i] = elapsedTime(timesPreprocessed[i]);
+  }
+}
+function elapsedTime(startTimeProcessed) {
+  var endTimeProcessed = getDateTime();
+  var year1 = parseInt(startTimeProcessed.substring(0, 4));
+  var month1 = parseInt(startTimeProcessed.substring(5, 7));
+  var day1 = parseInt(startTimeProcessed.substring(8, 10));
+  var hour1 = parseInt(startTimeProcessed.substring(11, 13));
+  var minute1 = parseInt(startTimeProcessed.substring(14, 16));
+
+  var year2 = parseInt(endTimeProcessed.substring(0, 4));
+  var month2 = parseInt(endTimeProcessed.substring(5, 7));
+  var day2 = parseInt(endTimeProcessed.substring(8, 10));
+  var hour2 = parseInt(endTimeProcessed.substring(11, 13));
+  var minute2 = parseInt(endTimeProcessed.substring(14, 16));
+
+  var elapse = Math.abs(
+    year1 * 365 * 24 * 60 +
+      month1 * 30 * 24 * 60 +
+      day1 * 24 * 60 +
+      hour1 * 60 +
+      minute1 -
+      (year2 * 365 * 24 * 60 +
+        month2 * 30 * 24 * 60 +
+        day2 * 24 * 60 +
+        hour2 * 60 +
+        minute2)
+  );
+  return elapse;
+}
+
 var busynessDataToSend = [];
 
-function populateBusynessData() {
+function populateDataToSend() {
   for (var i = 0; i < names.length; i++) {
     busynessDataToSend.push({
       name: names[i],
@@ -141,21 +280,20 @@ function populateBusynessData() {
   }
   //console.log(busynessDataToSend);
 }
-
+/*
 router.route("/").get((req, res) => {
   Busyness.find()
     .then((busynesss) => res.json(busynesss))
     .catch((err) => res.status(400).json("Error: " + err));
 });
+*/
 
 router.route("/add").post((req, res) => {
   const storeAddress = req.body.storeAddress;
-  const storeName = req.body.storeName;
   const busyness = req.body.busyness;
 
   const newBusyness = new Busyness({
     storeAddress,
-    storeName,
     busyness,
   });
 
@@ -174,32 +312,5 @@ router.route("/view").post((req, res) => {
   //console.log(latitude + "," + longitude);
   //console.log(radius);
 });
-
-router.route("/:id").get((req, res) => {
-  Busyness.findById(req.params.id)
-    .then((busyness) => res.json(busyness))
-    .catch((err) => res.status(400).json("Error: " + err));
-});
-router.route("/:id").delete((req, res) => {
-  Busyness.findByIdAndDelete(req.params.id)
-    .then(() => res.json("Busyness deleted."))
-    .catch((err) => res.status(400).json("Error: " + err));
-});
-/*
-router.route("/update/:id").post((req, res) => {
-  Busyness.findById(req.params.id)
-    .then((busyness) => {
-      busyness.storeAddress = req.body.storeAddress;
-      busyness.storeName = req.body.storeName;
-      busyness.busyness = req.body.busyness;
-
-      busyness
-        .save()
-        .then(() => res.json("Busyness updated!"))
-        .catch((err) => res.status(400).json("Error: " + err));
-    })
-    .catch((err) => res.status(400).json("Error: " + err));
-});
-*/
 
 module.exports = router;
