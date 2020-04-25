@@ -114,20 +114,12 @@ function readFromDB(i) {
       timesPreprocessed[j] = temp4;
     }
     busynessLevel[i] = determineBusyness();
-    console.log(busynessLevel[i]);
+    console.log(busynessLevel[i]); //busynessLevel array is filled correctly, but cant send it bc the array is empty outside this Busyness.find block of code
     busynessInDB = [];
     timesPreprocessed = [];
     scores = [];
     times = [];
-
-    //busynessLevel is stored here, but the array is empty outside of this Busyness.find block
   });
-
-  //MATTHEW READ THIS: busynesInDB.length = 0 here but its not in the for loop right above
-
-  //console.log(dataReturned); //if i console.log(dataReturned) here, i get empty array
-
-  //console.log(busynessLevel[i]);
 }
 
 // sort stores by size
