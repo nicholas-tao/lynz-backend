@@ -50,7 +50,6 @@ router.get("/getstores", (request, response, next) => {
     .then((getResponse) => {
       console.log("GET Response");
       data = getResponse.data;
-      //response.send(data);
 
       for (var i = 0; i < data.results.length; i++) {
         names[i] = data.results[i].name;
