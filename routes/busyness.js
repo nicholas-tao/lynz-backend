@@ -88,7 +88,8 @@ router.get("/getstores", (request, response) => {
       }
       sortSizes();
       for (var i = 0; i < names.length; i++) {
-        readFromDB(i);
+        //readFromDB(i);
+        getData(address[i], i);
       }
       populateDataToSend();
       response.send(busynessDataToSend);
@@ -98,28 +99,27 @@ router.get("/getstores", (request, response) => {
     });
 });
 
-function readFromDB(i) {
+async function getData(addressToSearch, i) {
   var dataReturned;
-  Busyness.find({ storeAddress: address[i] }, function (err, storeInfo) {
-    if (err) return handleError(err);
-    dataReturned = storeInfo;
-    //console.log(dataReturned); //if i console.log(dataReturned) here, i get the data
-    //if i put the for loop (j < dataReturned.length) here, i still get all stores as Not Busy
-    for (var j = 0; j < dataReturned.length; j++) {
-      busynessInDB[j] = String(dataReturned[j].busyness);
-      var temp = String(dataReturned[j].createdAt);
-      var temp2 = new Date(temp);
-      //var temp3 = String(temp2);
-      var temp4 = temp2.toISOString();
-      timesPreprocessed[j] = temp4;
-    }
-    busynessLevel[i] = determineBusyness();
-    console.log(busynessLevel[i]); //busynessLevel array is filled correctly, but cant send it bc the array is empty outside this Busyness.find block of code
-    busynessInDB = [];
-    timesPreprocessed = [];
-    scores = [];
-    times = [];
+  await Busyness.find({ storeAddress: addressToSearch }, function (err, res) {
+    dataReturned = res;
   });
+
+  for (var j = 0; j < dataReturned.length; j++) {
+    busynessInDB[j] = String(dataReturned[j].busyness);
+    var temp = String(dataReturned[j].createdAt);
+    var temp2 = new Date(temp);
+    //var temp3 = String(temp2);
+    var temp4 = temp2.toISOString();
+    timesPreprocessed[j] = temp4;
+  }
+  busynessLevel[i] = determineBusyness();
+  //console.log(busynessLevel[i]); //busynessLevel array is filled correctly, but cant send it bc the array is empty outside this Busyness.find block of code
+  busynessInDB = [];
+  timesPreprocessed = [];
+  scores = [];
+  times = [];
+  console.log(busynessLevel[0]);
 }
 
 // sort stores by size
