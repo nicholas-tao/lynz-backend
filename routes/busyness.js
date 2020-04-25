@@ -108,9 +108,14 @@ function readFromDB(i) {
     //if i put the for loop (j < dataReturned.length) here, i still get all stores as Not Busy
     for (var j = 0; j < dataReturned.length; j++) {
       busynessInDB[j] = String(dataReturned[j].busyness);
-      timesPreprocessed[j] = dataReturned[j].createdAt;
+      var temp = String(dataReturned[j].createdAt);
+      var temp2 = new Date(temp);
+      //var temp3 = String(temp2);
+      var temp4 = temp2.toISOString();
+      timesPreprocessed[j] = temp4;
     }
     busynessLevel[i] = determineBusyness();
+    //busynessLevel is stored here, but the array is empty outside of this Busyness.find block
   });
 
   //MATTHEW READ THIS: busynesInDB.length = 0 here but its not in the for loop right above
@@ -171,10 +176,8 @@ function determineBusyness() {
     var z = 1 / Math.pow(times[i] + 1, 2);
     x += scores[i] * z;
     y += z;
-    console.log(scores[i] + " " + times[i]);
   }
   var weightedScore = Math.round(x / y);
-  console.log(weightedScore);
   var final = chooseClosest(weightedScore); // choosing final busyness score
 
   str = outcome(final); // final busyness as a string
@@ -255,12 +258,11 @@ function getDateTime() {
 
 function convertTime() {
   for (var i = 0; i < timesPreprocessed.length; i++) {
-    console.log("time pre: " + timesPreprocessed[i]);
     times[i] = elapsedTime(timesPreprocessed[i]);
   }
 }
 function elapsedTime(startTimeProcessedParam) {
-  var startTimeProcessed = String(startTimeProcessedParam);
+  var startTimeProcessed = startTimeProcessedParam;
   var endTimeProcessed = getDateTime();
   var year1 = parseInt(startTimeProcessed.substring(0, 4));
   var month1 = parseInt(startTimeProcessed.substring(5, 7));
