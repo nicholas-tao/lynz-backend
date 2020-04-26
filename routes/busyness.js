@@ -87,39 +87,50 @@ router.get("/getstores", (request, response) => {
         }
       }
       sortSizes();
-      for (var i = 0; i < names.length; i++) {
-        //readFromDB(i);
-        getData(address[i], i);
-      }
-      populateDataToSend();
-      response.send(busynessDataToSend);
+      var busynessDataToSend1 = getData();
+      //console.log(busynessDataToSend1);
+      response.send(busynessDataToSend1);
     })
     .catch((err) => {
       console.log("Error:" + err.message);
     });
 });
 
-async function getData(addressToSearch, i) {
-  var dataReturned;
-  await Busyness.find({ storeAddress: addressToSearch }, function (err, res) {
-    dataReturned = res;
-  });
+async function getData() {
+  for (var i = 0; i < names.length; i++) {
+    var dataReturned;
+    await Busyness.find({ storeAddress: address[i] }, function (err, res) {
+      dataReturned = res;
+    });
 
-  for (var j = 0; j < dataReturned.length; j++) {
-    busynessInDB[j] = String(dataReturned[j].busyness);
-    var temp = String(dataReturned[j].createdAt);
-    var temp2 = new Date(temp);
-    //var temp3 = String(temp2);
-    var temp4 = temp2.toISOString();
-    timesPreprocessed[j] = temp4;
+    for (var j = 0; j < dataReturned.length; j++) {
+      busynessInDB[j] = String(dataReturned[j].busyness);
+      var temp = String(dataReturned[j].createdAt);
+      var temp2 = new Date(temp);
+      //var temp3 = String(temp2);
+      var temp4 = temp2.toISOString();
+      timesPreprocessed[j] = temp4;
+    }
+    busynessLevel[i] = determineBusyness();
+    //console.log(busynessLevel[i]); //busynessLevel array is filled correctly, but cant send it bc the array is empty outside this Busyness.find block of code
+    busynessInDB = [];
+    timesPreprocessed = [];
+    scores = [];
+    times = [];
   }
-  busynessLevel[i] = determineBusyness();
-  //console.log(busynessLevel[i]); //busynessLevel array is filled correctly, but cant send it bc the array is empty outside this Busyness.find block of code
-  busynessInDB = [];
-  timesPreprocessed = [];
-  scores = [];
-  times = [];
-  console.log(busynessLevel[0]);
+
+  var busynessDataToSend = [];
+  for (var i = 0; i < names.length; i++) {
+    busynessDataToSend.push({
+      name: names[i],
+      address: address[i],
+      busyness: busynessLevel[i],
+    });
+  }
+
+  console.log(busynessDataToSend);
+
+  return Promise.resolve(busynessDataToSend);
 }
 
 // sort stores by size
@@ -278,18 +289,6 @@ function elapsedTime(startTimeProcessedParam) {
         minute2)
   );
   return elapse;
-}
-
-var busynessDataToSend = [];
-
-function populateDataToSend() {
-  for (var i = 0; i < names.length; i++) {
-    busynessDataToSend.push({
-      name: names[i],
-      address: address[i],
-      busyness: busynessLevel[i],
-    });
-  }
 }
 
 router.route("/add").post((req, res) => {
