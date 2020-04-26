@@ -45,6 +45,8 @@ var busynessInDB = [];
 var timesPreprocessed = [];
 var scores = [];
 var times = [];
+var busynessDataToSend = [];
+
 //var dataReturned = [];
 
 router.get("/getstores", (request, response) => {
@@ -88,7 +90,7 @@ router.get("/getstores", (request, response) => {
       }
       sortSizes();
       var busynessDataToSend1 = getData().then(() => {
-        response.send(busynessDataToSend1);
+        response.send(busynessDataToSend);
         console.log("sent");
       });
       //console.log(busynessDataToSend1);
@@ -121,7 +123,6 @@ async function getData() {
     times = [];
   }
 
-  var busynessDataToSend = [];
   for (var i = 0; i < names.length; i++) {
     busynessDataToSend.push({
       name: names[i],
@@ -130,8 +131,8 @@ async function getData() {
     });
   }
 
-  console.log(busynessDataToSend);
-  return busynessDataToSend;
+  //console.log(busynessDataToSend);
+  return Promise.resolve(busynessDataToSend);
   //READ THIS: the problem is response is sent before busynessDataToSend is created
 }
 
