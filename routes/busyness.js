@@ -47,8 +47,6 @@ var scores = [];
 var times = [];
 var busynessDataToSend = [];
 
-//var dataReturned = [];
-
 router.get("/getstores", (request, response) => {
   axios
     .get(link1)
