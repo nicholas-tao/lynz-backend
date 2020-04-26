@@ -107,12 +107,10 @@ async function getData() {
       busynessInDB[j] = String(dataReturned[j].busyness);
       var temp = String(dataReturned[j].createdAt);
       var temp2 = new Date(temp);
-      //var temp3 = String(temp2);
       var temp4 = temp2.toISOString();
       timesPreprocessed[j] = temp4;
     }
     busynessLevel[i] = determineBusyness();
-    //console.log(busynessLevel[i]); //busynessLevel array is filled correctly, but cant send it bc the array is empty outside this Busyness.find block of code
     busynessInDB = [];
     timesPreprocessed = [];
     scores = [];
@@ -126,10 +124,7 @@ async function getData() {
       busyness: busynessLevel[i],
     });
   }
-
-  //console.log(busynessDataToSend);
   return Promise.resolve(busynessDataToSend);
-  //READ THIS: the problem is response is sent before busynessDataToSend is created
 }
 
 // sort stores by size
