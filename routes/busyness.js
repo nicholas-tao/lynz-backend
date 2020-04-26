@@ -130,6 +130,8 @@ async function getData() {
   }
 
   console.log(busynessDataToSend);
+  return busynessDataToSend;
+  //READ THIS: the problem is response is sent before busynessDataToSend is created
 }
 
 // sort stores by size
