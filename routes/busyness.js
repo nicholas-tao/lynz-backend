@@ -9,9 +9,9 @@ const API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 var longitude = 43.87896;
 var latitude = -79.413383;
 
-//longitude = 37.365892;
-//latitude = -122.058422;
-var radius = 500; //in metres
+longitude = 37.451669;
+latitude = -122.15827;
+var radius = 5000; //in metres
 
 //for when user wants to view busyness (First they send their coordinates and radius)
 router.route("/view").post((req, res) => {
@@ -123,8 +123,10 @@ function buildResponse() {
     busynessDataToSendLol.push({
       name: names[i],
       address: address[i],
+      busyness: "Insufficient Data",
     });
   }
+  console.log(busynessDataToSendLol);
 }
 
 async function getData() {
