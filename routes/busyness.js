@@ -46,6 +46,7 @@ var timesPreprocessed = [];
 var scores = [];
 var times = [];
 var busynessDataToSend = [];
+var busynessDataToSendLol = [];
 
 router.get("/getstores", (request, response) => {
   axios
@@ -87,6 +88,7 @@ router.get("/getstores", (request, response) => {
         }
       }
       sortSizes();
+      /*
       getData()
         .then(() => {
           response.send(busynessDataToSend);
@@ -96,26 +98,39 @@ router.get("/getstores", (request, response) => {
         .catch((err) => {
           console.error(err);
         });
+        */
+      buildResponse();
+      response.send(busynessDataToSendLol);
     })
     .catch((err) => {
       console.log("Error:" + err.message);
     });
 });
 
+function buildResponse() {
+  for (var i = 0; i < names.length; i++) {
+    busynessDataToSendLol.push({
+      name: names[i],
+      address: address[i],
+    });
+  }
+}
+
 async function getData() {
   for (var i = 0; i < names.length; i++) {
     var dataReturned;
     await Busyness.find({ storeAddress: address[i] }, function (err, res) {
       dataReturned = res;
+    }).then(() => {
+      for (var j = 0; j < dataReturned.length; j++) {
+        busynessInDB[j] = String(dataReturned[j].busyness);
+        var temp = String(dataReturned[j].createdAt);
+        var temp2 = new Date(temp);
+        var temp4 = temp2.toISOString();
+        timesPreprocessed[j] = temp4;
+      }
     });
 
-    for (var j = 0; j < dataReturned.length; j++) {
-      busynessInDB[j] = String(dataReturned[j].busyness);
-      var temp = String(dataReturned[j].createdAt);
-      var temp2 = new Date(temp);
-      var temp4 = temp2.toISOString();
-      timesPreprocessed[j] = temp4;
-    }
     busynessLevel[i] = determineBusyness();
     busynessInDB = [];
     timesPreprocessed = [];
