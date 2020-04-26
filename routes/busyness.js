@@ -11,7 +11,17 @@ var latitude = -79.413383;
 
 //longitude = 37.365892;
 //latitude = -122.058422;
-var radius = 5000; //in metres
+var radius = 500; //in metres
+
+//for when user wants to view busyness (First they send their coordinates and radius)
+router.route("/view").post((req, res) => {
+  latitude = req.body.latitude;
+  longitude = req.body.longitude;
+  radius = req.body.radius;
+
+  console.log(latitude + "," + longitude);
+  console.log(radius);
+});
 
 var link1 =
   "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
@@ -99,6 +109,7 @@ router.get("/getstores", (request, response) => {
           console.error(err);
         });
         */
+      busynessDataToSendLol = [];
       buildResponse();
       response.send(busynessDataToSendLol);
     })
@@ -319,16 +330,6 @@ router.route("/add").post((req, res) => {
     .save()
     .then(() => res.json("Busyness added!"))
     .catch((err) => res.status(400).json("Error: " + err));
-});
-
-//for when user wants to view busyness (First they send their coordinates and radius)
-router.route("/view").post((req, res) => {
-  const latitude = req.body.latitude;
-  const longitude = req.body.longitude;
-  const radius = req.body.radius;
-
-  console.log(latitude + "," + longitude);
-  console.log(radius);
 });
 
 module.exports = router;
