@@ -3,6 +3,8 @@
 
 [Visit Devpost Page](https://devpost.com/software/lynz)
 
+[Demo Video](https://youtu.be/DzKA0FkMRdE)
+
 ## Inspiration
 To flatten the COVID-19 curve, we're all doing our best to minimize social interactions. If possible, we've even barricaded ourselves moat and drawbridge at home hoping to wait this storm out. Even so, there is one necessity that nobody can wait out forever: grocery shopping.
 
