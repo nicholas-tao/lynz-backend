@@ -87,10 +87,11 @@ router.get("/getstores", (request, response) => {
         }
       }
       sortSizes();
-      var busynessDataToSend1 = getData();
+      var busynessDataToSend1 = getData().then(() => {
+        response.send(busynessDataToSend1);
+        console.log("sent");
+      });
       //console.log(busynessDataToSend1);
-      response.send(busynessDataToSend1);
-      console.log("sent");
     })
     .catch((err) => {
       console.log("Error:" + err.message);
