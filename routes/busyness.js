@@ -87,9 +87,15 @@ router.get("/getstores", (request, response) => {
         }
       }
       sortSizes();
-      getData().then(() => {
-        response.send(busynessDataToSend);
-      });
+      getData()
+        .then(() => {
+          response.send(busynessDataToSend);
+          console.log("Sent");
+          busynessDataToSend = []; //reset obj to be send each time
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     })
     .catch((err) => {
       console.log("Error:" + err.message);
@@ -306,8 +312,8 @@ router.route("/view").post((req, res) => {
   const longitude = req.body.longitude;
   const radius = req.body.radius;
 
-  //console.log(latitude + "," + longitude);
-  //console.log(radius);
+  console.log(latitude + "," + longitude);
+  console.log(radius);
 });
 
 module.exports = router;
