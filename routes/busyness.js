@@ -88,8 +88,9 @@ router.get("/getstores", (request, response) => {
       }
       sortSizes();
       var busynessDataToSend1 = getData();
-      console.log(busynessDataToSend1);
+      //console.log(busynessDataToSend1);
       response.send(busynessDataToSend1);
+      console.log("sent");
     })
     .catch((err) => {
       console.log("Error:" + err.message);
@@ -128,9 +129,7 @@ async function getData() {
     });
   }
 
-  //console.log(busynessDataToSend);
-
-  return busynessDataToSend;
+  console.log(busynessDataToSend);
 }
 
 // sort stores by size
