@@ -21,6 +21,7 @@ router.route("/view").post((req, res) => {
 
   console.log(latitude + "," + longitude);
   console.log(radius);
+  //lol this request never sends anything back
 });
 
 var link1 =
