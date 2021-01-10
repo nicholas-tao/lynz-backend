@@ -6,43 +6,12 @@ const axios = require("axios");
 const API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
 //this stuff to get from frontend
-var longitude = 43.87896;
-var latitude = -79.413383;
+// var longitude = 43.87896;
+// var latitude = -79.413383;
 
-longitude = 37.451669;
-latitude = -122.15827;
-var radius = 5000; //in metres
-
-//for when user wants to view busyness (First they send their coordinates and radius)
-router.route("/view").post((req, res) => {
-  latitude = req.body.latitude;
-  longitude = req.body.longitude;
-  radius = req.body.radius;
-
-  console.log(latitude + "," + longitude);
-  console.log(radius);
-  //lol this request never sends anything back
-});
-
-var link1 =
-  "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
-  longitude +
-  "," +
-  latitude +
-  "&radius=" +
-  radius +
-  "&type=grocery_or_supermarket&fields=name,formatted_address,user_ratings_total,place_id&key=" +
-  API_KEY;
-
-var link2 =
-  "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
-  longitude +
-  "," +
-  latitude +
-  "&radius=" +
-  radius +
-  "&type=department_store&fields=name,formatted_address,user_ratings_total,place_id&key=" +
-  API_KEY;
+// longitude = 37.451669;
+// latitude = -122.15827;
+// var radius = 5000; //in metres
 
 var names = [];
 var address = [];
@@ -59,12 +28,42 @@ var times = [];
 var busynessDataToSend = [];
 var busynessDataToSendLol = [];
 
-router.get("/getstores", (request, response) => {
+router.post("/getstores", (req, response) => {
+  let latitude = req.body.latitude;
+  let longitude = req.body.longitude;
+  let radius = req.body.radius;
+
+  console.log(latitude + "," + longitude);
+  console.log(radius);
+
+  var link1 =
+    "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+    longitude +
+    "," +
+    latitude +
+    "&radius=" +
+    radius +
+    "&type=grocery_or_supermarket&key=" +
+    API_KEY;
+
+  var link2 =
+    "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+    longitude +
+    "," +
+    latitude +
+    "&radius=" +
+    radius +
+    "&type=department_store&fields=name,formatted_address,user_ratings_total,place_id&key=" +
+    API_KEY;
+
+  console.log(link1 + "\n" + link2);
+
   axios
     .get(link1)
     .then((getResponse) => {
       console.log("GET Response");
       data = getResponse.data;
+      console.log(data);
 
       for (var i = 0; i < data.results.length; i++) {
         names[i] = data.results[i].name;
