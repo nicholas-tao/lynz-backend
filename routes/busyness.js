@@ -43,7 +43,7 @@ router.post("/getstores", (req, response) => {
     latitude +
     "&radius=" +
     radius +
-    "&type=grocery_or_supermarket&key=" +
+    "&type=grocery_or_supermarket&fields=name,formatted_address,user_ratings_total,place_id&key=" +
     API_KEY;
 
   var link2 =
@@ -63,7 +63,7 @@ router.post("/getstores", (req, response) => {
     .then((getResponse) => {
       console.log("GET Response");
       data = getResponse.data;
-      console.log(data);
+      //console.log(data);
 
       for (var i = 0; i < data.results.length; i++) {
         names[i] = data.results[i].name;
@@ -98,7 +98,7 @@ router.post("/getstores", (req, response) => {
         }
       }
       sortSizes();
-      /*
+
       getData()
         .then(() => {
           response.send(busynessDataToSend);
@@ -108,10 +108,10 @@ router.post("/getstores", (req, response) => {
         .catch((err) => {
           console.error(err);
         });
-        */
+      /*
       busynessDataToSendLol = [];
       buildResponse();
-      response.send(busynessDataToSendLol);
+      response.send(busynessDataToSendLol);*/
     })
     .catch((err) => {
       console.log("Error:" + err.message);
@@ -123,7 +123,8 @@ function buildResponse() {
     busynessDataToSendLol.push({
       name: names[i],
       address: address[i],
-      busyness: "Insufficient Data",
+      //busyness: "Insufficient Data",
+      busyness: busynessLevel[i],
     });
   }
   console.log(busynessDataToSendLol);
