@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-import testRes from "./testRes";
+import { testRes } from "./testRes";
 
 const router = require("express").Router();
 let Busyness = require("../models/busyness.model");
