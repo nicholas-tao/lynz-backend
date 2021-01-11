@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+import testRes from "./testRes";
+
 const router = require("express").Router();
 let Busyness = require("../models/busyness.model");
 const axios = require("axios");
@@ -101,6 +103,7 @@ router.post("/getstores", (req, response) => {
 
       getData()
         .then(() => {
+          if (busynessDataToSend.length === 0) response.send(testRes);
           response.send(busynessDataToSend);
           console.log("Sent");
           busynessDataToSend = []; //reset obj to be send each time
