@@ -2,7 +2,7 @@
 
 **Outsmarting lines, together**
 
-![Demo Gif](https://github.com/nicholas-tao/lynz-backend/gifs/demo.gif)
+![Demo Gif](https://github.com/nicholas-tao/lynz-backend/blob/master/gifs/demo.gif)
 
 [Visit Devpost Page](https://devpost.com/software/lynz)
 
